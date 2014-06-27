@@ -1,0 +1,38 @@
+{% block main %}
+  Данные на {% now "H:i" %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Время</th>
+        <th>Адрес</th>
+        <th>Клиент</th>
+        <th>Действие</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% regroup events by timestamp|date:"d.m.Y" as events_by_day %}
+    {% for events_one_day in events_by_day %}
+      <tr><td colspan="4">{{ events_one_day.grouper }}</td></tr>
+      {% for event in events_one_day.list %}
+        <tr>
+          <td>{{ event.timestamp|date:"H:i" }}</td>
+          <td title="{{ event.address }} - {{ event.location.country_name|default:'Unknown Country' }}">
+            <a href="http://whois.domaintools.com/{{ event.address }}" target="_blank" style="text-decoration:none">
+              <img src="{{ STATIC_URL }}country/{{ event.location.country_code|default:'ZZ' }}.png" onError="this.onerror=null;this.src='{{ STATIC_URL }}country/ZZ.png';">
+            </a>
+          </td>
+          <td title="{{ event.agent }}">
+            <a href="http://user-agent-string.info/parse?Fuas={{ event.agent|urlencode }}&test=5834&action=analyze" target="_blank" style="text-decoration:none">
+            <img src="{{ STATIC_URL }}device/{% if event.agent_property.is_pc %}PC{% elif event.agent_property.is_tablet %}Tablet{% elif event.agent_property.is_phone %}Phone{% elif event.agent_property.is_bot %}Robot{% else %}Unknown{% endif %}.png">
+            <img src="{{ STATIC_URL }}os/{{ event.agent_property.os.family }}.png" onError="this.onerror=null;this.src='{{ STATIC_URL }}os/Unknown.png';">
+            <img src="{{ STATIC_URL }}browser/{{ event.agent_property.browser.family }}.png" onError="this.onerror=null;this.src='{{ STATIC_URL }}browser/Unknown.png';">
+          </td>
+          <td>
+            {% include 'journal_event.htm' %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
