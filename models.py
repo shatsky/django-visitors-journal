@@ -19,6 +19,6 @@ class Journal(models.Model):
         from user_agents import parse
         # TODO: clean this pile of dirt which is here because parse() gives os.family="Windows 7"/"Windows Vista"... for Windows, not just "Windows" as we want
         result = parse(self.agent)
-        return {'os': {'family': result.os.family if result.os.family.split(' ', 0)!='Windows' else 'Windows'}, 'browser': {'family': result.browser.family}, 'is_pc': result.is_pc, 'is_mobile': result.is_mobile, 'is_tablet': result.is_tablet, 'is_bot': result.is_bot}
+        return {'os': {'family': result.os.family if result.os.family.split(' ')[0]!='Windows' else 'Windows'}, 'browser': {'family': result.browser.family}, 'is_pc': result.is_pc, 'is_mobile': result.is_mobile, 'is_tablet': result.is_tablet, 'is_bot': result.is_bot}
     class Meta:
         abstract = True
