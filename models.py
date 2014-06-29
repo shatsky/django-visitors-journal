@@ -7,7 +7,7 @@ class Journal(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     address = models.IPAddressField()
     agent = models.CharField(max_length=255)
-    #referer = models.CharField(max_length=255)
+    referer = models.CharField(max_length=255)
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     @property
     def location(self):
